@@ -1,0 +1,67 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.Scanner;
+
+public class loginAndRegister {
+
+    public static void main(String[] args) {
+        registerUser();//Tests the register user
+        loginUser();//Tests the login user
+    }
+
+    public static void registerUser() {
+//Basic cin and cout for the username and password
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Registration");
+        System.out.print("Enter your username: ");
+        String username = scanner.nextLine();
+        System.out.print("Enter your password: ");
+        String password = scanner.nextLine();
+        String userData = username + "," + password;
+
+        //Asked chat gbt about the exception and how to code it and made the catch function so it made the exception file
+        try {//Tried to make a new user credentials txt and read from it
+            PrintWriter out = new PrintWriter("user_credentials.txt"); //Tries to open and or create the user_credential.txt file
+            out.println(userData); //Tries to right in the user data into the user.txt
+            out.close();//Closes the file in essence
+            System.out.println("User registered successfully!");//if the input is valid where it writes in correctly it will say registeration successful
+        } catch (FileNotFoundException e) {//This is the exception where the file isnt found or created
+            System.out.println("Error writing to file: " + e.getMessage());//outputs the message for the error
+        }
+    }
+
+    public static void loginUser() {
+        Scanner scanner = new Scanner(System.in);//Makes a new scanner object
+        System.out.println("\nLogin");//Prints out login but should be replaced with our login ui
+        System.out.print("Enter your username: ");//ui should already gave this
+        String inputUsername = scanner.nextLine();//Saves the input into input user
+        System.out.print("Enter your password: ");//ui should have a password
+        String inputPassword = scanner.nextLine();//saves the password into input password
+        try {//Below chat gbt made this for the file and how to currently read through a file properly since I put how to read a file like in c++
+            File file = new File("user_credentials.txt");//looks for the file to initialize a file to the selected file
+            Scanner fileScanner = new Scanner(file); //makes a scanner to read the file which was initialized with the code above
+            boolean loginSuccess = false;// makes the login success to false by default
+            while (fileScanner.hasNextLine()) {//loop to go through the file and as long as there is still information it will keep going
+                String line = fileScanner.nextLine();//The current String line and or what is being read is stored into here
+                String[] parts = line.split(",");//makes a string array to break up the username and password splitting them
+                if (parts.length == 2) {//The lenth should only be 2 since it is a username and password
+                    String storedUsername = parts[0];//Stores it into the 0 index for the user
+                    String storedPassword = parts[1];//Stores it into the 1 index for password
+                    if (inputUsername.equals(storedUsername) && inputPassword.equals(storedPassword)) { //if it equals the stored pass and tored suer it will make the login true
+                        loginSuccess = true;
+                        break;//Stops the code
+                    }
+                }
+            }
+            fileScanner.close();
+            if (loginSuccess) {//Dialouge if it works and all of the other options
+                System.out.println("Login successful!");
+            } else {
+                System.out.println("Invalid username or password.");
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Error reading from file: " + e.getMessage());
+        }
+    }
+}
